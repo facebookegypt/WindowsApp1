@@ -22,6 +22,8 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.UploadBtn = New System.Windows.Forms.Button()
         Me.FileLocTxt = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -29,12 +31,18 @@ Partial Class Form1
         Me.DownloadBtn = New System.Windows.Forms.Button()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.STRFileNm = New System.Windows.Forms.ToolStripLabel()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.STRSize = New System.Windows.Forms.ToolStripLabel()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.STRFileID = New System.Windows.Forms.ToolStripLabel()
+        Me.MyGDrive = New System.Windows.Forms.TreeView()
+        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'UploadBtn
         '
-        Me.UploadBtn.Location = New System.Drawing.Point(15, 69)
+        Me.UploadBtn.Location = New System.Drawing.Point(15, 214)
         Me.UploadBtn.Name = "UploadBtn"
         Me.UploadBtn.Size = New System.Drawing.Size(75, 23)
         Me.UploadBtn.TabIndex = 0
@@ -45,7 +53,7 @@ Partial Class Form1
         '
         Me.FileLocTxt.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.FileLocTxt.Location = New System.Drawing.Point(15, 25)
+        Me.FileLocTxt.Location = New System.Drawing.Point(15, 188)
         Me.FileLocTxt.Name = "FileLocTxt"
         Me.FileLocTxt.ReadOnly = True
         Me.FileLocTxt.Size = New System.Drawing.Size(439, 20)
@@ -54,7 +62,7 @@ Partial Class Form1
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 9)
+        Me.Label1.Location = New System.Drawing.Point(12, 172)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(63, 13)
         Me.Label1.TabIndex = 2
@@ -63,7 +71,7 @@ Partial Class Form1
         'BrowseBtn
         '
         Me.BrowseBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BrowseBtn.Location = New System.Drawing.Point(460, 23)
+        Me.BrowseBtn.Location = New System.Drawing.Point(463, 186)
         Me.BrowseBtn.Name = "BrowseBtn"
         Me.BrowseBtn.Size = New System.Drawing.Size(75, 23)
         Me.BrowseBtn.TabIndex = 3
@@ -73,7 +81,7 @@ Partial Class Form1
         'DownloadBtn
         '
         Me.DownloadBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DownloadBtn.Location = New System.Drawing.Point(379, 69)
+        Me.DownloadBtn.Location = New System.Drawing.Point(379, 214)
         Me.DownloadBtn.Name = "DownloadBtn"
         Me.DownloadBtn.Size = New System.Drawing.Size(75, 23)
         Me.DownloadBtn.TabIndex = 4
@@ -84,8 +92,8 @@ Partial Class Form1
         '
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.STRFileNm})
-        Me.ToolStrip1.Location = New System.Drawing.Point(0, 166)
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.STRFileNm, Me.ToolStripSeparator1, Me.STRSize, Me.ToolStripSeparator2, Me.STRFileID})
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 240)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(550, 25)
         Me.ToolStrip1.TabIndex = 5
@@ -96,12 +104,52 @@ Partial Class Form1
         Me.STRFileNm.Name = "STRFileNm"
         Me.STRFileNm.Size = New System.Drawing.Size(0, 22)
         '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        '
+        'STRSize
+        '
+        Me.STRSize.Name = "STRSize"
+        Me.STRSize.Size = New System.Drawing.Size(0, 22)
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
+        '
+        'STRFileID
+        '
+        Me.STRFileID.Name = "STRFileID"
+        Me.STRFileID.Size = New System.Drawing.Size(0, 22)
+        '
+        'MyGDrive
+        '
+        Me.MyGDrive.ImageIndex = 0
+        Me.MyGDrive.ImageList = Me.ImageList1
+        Me.MyGDrive.Location = New System.Drawing.Point(15, 12)
+        Me.MyGDrive.Name = "MyGDrive"
+        Me.MyGDrive.SelectedImageIndex = 0
+        Me.MyGDrive.Size = New System.Drawing.Size(439, 157)
+        Me.MyGDrive.StateImageList = Me.ImageList1
+        Me.MyGDrive.TabIndex = 6
+        '
+        'ImageList1
+        '
+        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
+        Me.ImageList1.Images.SetKeyName(0, "Group_close.png")
+        Me.ImageList1.Images.SetKeyName(1, "folder_stand.png")
+        Me.ImageList1.Images.SetKeyName(2, "open_folder.png")
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(550, 191)
+        Me.ClientSize = New System.Drawing.Size(550, 265)
         Me.ControlBox = False
+        Me.Controls.Add(Me.MyGDrive)
         Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.DownloadBtn)
         Me.Controls.Add(Me.BrowseBtn)
@@ -127,4 +175,10 @@ Partial Class Form1
     Friend WithEvents DownloadBtn As Button
     Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents STRFileNm As ToolStripLabel
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents STRSize As ToolStripLabel
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents STRFileID As ToolStripLabel
+    Friend WithEvents MyGDrive As TreeView
+    Friend WithEvents ImageList1 As ImageList
 End Class
