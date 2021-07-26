@@ -14,7 +14,7 @@ Class Class2
     'If modifying these scopes, delete your previously saved credentials
     ' at ~/.credentials/drive-dotnet-quickstart.json
     Private Shared ReadOnly Scopes() As String = {DriveService.Scope.Drive}
-    Private Shared ReadOnly ApplicationName As String = ("My First Project")
+    Private Shared ReadOnly ApplicationName As String = ("evry1falls")
     Dim I As List(Of IList) = New List(Of IList)
     Private Shared MyList As Dictionary(Of String, String) = New Dictionary(Of String, String)
     Private Shared Async Function GetService() As Task(Of DriveService)
@@ -38,22 +38,24 @@ Class Class2
             Return service
         End Using
     End Function
-    Public Shared Function GetFolders(Optional ByVal QueryI As String = "application/vnd.google-apps.folder") _
-        As Dictionary(Of String, String)
-        Using Service As DriveService = GetService().Result
-
+    Public Shared Async Function GetFolders() As Task(Of Dictionary(Of String, String))
+        Using Service As DriveService = Await GetService()
             Dim listRequest As FilesResource.ListRequest = Service.Files.List()
             With listRequest
                 .Fields = "*"
-                .Q = "'root' in parents"
+                .Q = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents"
                 .Spaces = "Drive"
             End With
-            Dim listFolder As FileList = listRequest.Execute
-            For Each item As Data.File In listFolder.Files
-                If item.MimeType = QueryI Then
-                    MyList.Add(item.Name, item.Parents(0))
-                End If
-            Next
+            Try
+                Dim listFolder As FileList = listRequest.Execute
+                For Each item As Data.File In listFolder.Files
+                    MyList.Add(item.Name, item.Id)
+                    'Debug.WriteLine("name= {0} id= {1}", item.Name, item.Id)
+                    listRequest.PageToken = listFolder.NextPageToken
+                Next
+            Catch ex As Exception
+                Debug.WriteLine(ex.Message)
+            End Try
         End Using
         Return MyList
     End Function
@@ -61,23 +63,31 @@ Class Class2
         Using Service = GetService().Result
             'Define parameters of request.
             Dim listRequest As FilesResource.ListRequest = Service.Files.List()
-
-            listRequest.PageSize = 20
-            listRequest.Fields = "nextPageToken, files(id, name)"
+            With listRequest
+                .Fields = "*"
+                .PageSize = 5
+                .Q = "mimeType != 'application/vnd.google-apps.folder' and 'root' in parents and trashed=false"
+                .Spaces = "Drive"
+            End With
+            listRequest.PageSize = 100
             'List files.
-            Dim files As List(Of Google.Apis.Drive.v3.Data.File) = listRequest.Execute().Files
-            'Debug.WriteLine("Files:")
-            If Not IsNothing(files) AndAlso files.Count > 0 Then
-                For Each file In files
-                    'Debug.WriteLine("{0} ({1})", file.Name, file.Id)
-                    '  MyList.Add(file.Name, file.Id)
-                Next
-            Else
-                'Debug.WriteLine("No files found.")
-                '  MyList.Add("Empty Drive", 0.ToString)
-            End If
+            Try
+                Dim files As FileList = listRequest.Execute()
+                If Not IsNothing(files) AndAlso files.Files.Count > 0 Then
+                    For Each file In files.Files
+                        Debug.WriteLine("{0} ({1})", file.Name, file.Id)
+                        MyList.Add(file.Name, file.Id)
+                        listRequest.PageToken = files.NextPageToken
+                    Next
+                Else
+                    Debug.WriteLine("No files found.")
+                    MyList.Add("Empty Drive", 0.ToString)
+                End If
+            Catch ex As Exception
+                Debug.WriteLine(ex.Message)
+            End Try
         End Using
-        'Return MyList
+        Return MyList
     End Function
     Public Shared Function UploadFileToFolder(FullPathLocFil As String) As _
         Task(Of Google.Apis.Upload.IUploadProgress)

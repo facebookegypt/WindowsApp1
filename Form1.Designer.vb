@@ -42,7 +42,8 @@ Partial Class Form1
         '
         'UploadBtn
         '
-        Me.UploadBtn.Location = New System.Drawing.Point(15, 214)
+        Me.UploadBtn.Enabled = False
+        Me.UploadBtn.Location = New System.Drawing.Point(15, 255)
         Me.UploadBtn.Name = "UploadBtn"
         Me.UploadBtn.Size = New System.Drawing.Size(75, 23)
         Me.UploadBtn.TabIndex = 0
@@ -53,7 +54,7 @@ Partial Class Form1
         '
         Me.FileLocTxt.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.FileLocTxt.Location = New System.Drawing.Point(15, 188)
+        Me.FileLocTxt.Location = New System.Drawing.Point(15, 229)
         Me.FileLocTxt.Name = "FileLocTxt"
         Me.FileLocTxt.ReadOnly = True
         Me.FileLocTxt.Size = New System.Drawing.Size(439, 20)
@@ -62,7 +63,7 @@ Partial Class Form1
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 172)
+        Me.Label1.Location = New System.Drawing.Point(12, 213)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(63, 13)
         Me.Label1.TabIndex = 2
@@ -71,7 +72,7 @@ Partial Class Form1
         'BrowseBtn
         '
         Me.BrowseBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BrowseBtn.Location = New System.Drawing.Point(463, 186)
+        Me.BrowseBtn.Location = New System.Drawing.Point(463, 227)
         Me.BrowseBtn.Name = "BrowseBtn"
         Me.BrowseBtn.Size = New System.Drawing.Size(75, 23)
         Me.BrowseBtn.TabIndex = 3
@@ -81,7 +82,8 @@ Partial Class Form1
         'DownloadBtn
         '
         Me.DownloadBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DownloadBtn.Location = New System.Drawing.Point(379, 214)
+        Me.DownloadBtn.Enabled = False
+        Me.DownloadBtn.Location = New System.Drawing.Point(379, 255)
         Me.DownloadBtn.Name = "DownloadBtn"
         Me.DownloadBtn.Size = New System.Drawing.Size(75, 23)
         Me.DownloadBtn.TabIndex = 4
@@ -93,7 +95,7 @@ Partial Class Form1
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.STRFileNm, Me.ToolStripSeparator1, Me.STRSize, Me.ToolStripSeparator2, Me.STRFileID})
-        Me.ToolStrip1.Location = New System.Drawing.Point(0, 240)
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 281)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(550, 25)
         Me.ToolStrip1.TabIndex = 5
@@ -131,7 +133,7 @@ Partial Class Form1
         Me.MyGDrive.Location = New System.Drawing.Point(15, 12)
         Me.MyGDrive.Name = "MyGDrive"
         Me.MyGDrive.SelectedImageIndex = 0
-        Me.MyGDrive.Size = New System.Drawing.Size(439, 157)
+        Me.MyGDrive.Size = New System.Drawing.Size(439, 198)
         Me.MyGDrive.StateImageList = Me.ImageList1
         Me.MyGDrive.TabIndex = 6
         '
@@ -142,12 +144,13 @@ Partial Class Form1
         Me.ImageList1.Images.SetKeyName(0, "Group_close.png")
         Me.ImageList1.Images.SetKeyName(1, "folder_stand.png")
         Me.ImageList1.Images.SetKeyName(2, "open_folder.png")
+        Me.ImageList1.Images.SetKeyName(3, "blank_report.png")
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(550, 265)
+        Me.ClientSize = New System.Drawing.Size(550, 306)
         Me.ControlBox = False
         Me.Controls.Add(Me.MyGDrive)
         Me.Controls.Add(Me.ToolStrip1)
