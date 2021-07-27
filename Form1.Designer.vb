@@ -128,11 +128,15 @@ Partial Class Form1
         '
         'MyGDrive
         '
+        Me.MyGDrive.FullRowSelect = True
+        Me.MyGDrive.HideSelection = False
+        Me.MyGDrive.HotTracking = True
         Me.MyGDrive.ImageIndex = 0
         Me.MyGDrive.ImageList = Me.ImageList1
         Me.MyGDrive.Location = New System.Drawing.Point(15, 12)
         Me.MyGDrive.Name = "MyGDrive"
         Me.MyGDrive.SelectedImageIndex = 0
+        Me.MyGDrive.ShowNodeToolTips = True
         Me.MyGDrive.Size = New System.Drawing.Size(439, 198)
         Me.MyGDrive.StateImageList = Me.ImageList1
         Me.MyGDrive.TabIndex = 6

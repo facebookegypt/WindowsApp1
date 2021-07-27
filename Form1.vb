@@ -1,29 +1,40 @@
 ﻿Public Class Form1
-    Private CountItms(1) As Integer 
+    Private CountItms(1) As Integer
+    Private TempFolderDownload As String = ("C:\")
+    Private IsFile As Boolean = True
     Private Async Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim ThisTree As TreeNode = New TreeNode("My Google Drive", 0, 0) With {
             .ToolTipText = "My Google Drive",
             .Name = "GDriveFolders"
         }
-
-        Dim MyFolders As Dictionary(Of String, String) = New Dictionary(Of String, String)
+        Dim MyFolders As List(Of String()) = New List(Of String())
         Try
+            'List All Folders in main Drive
             MyFolders = Await Class2.GetFolders
-            For Each I As KeyValuePair(Of String, String) In MyFolders
-                ThisTree.Nodes.Add(I.Value, I.Key, 1, 2).ToolTipText =
-                    ("Folder ID : " & I.Value)
+            For Each I As String() In MyFolders
+                ThisTree.Nodes.Add(I(1), I(0), 1, 2).ToolTipText =
+                    I(2) & " ID : " & I(1)
             Next
             CountItms(0) = ThisTree.Nodes.Count
+            'List All Files in main Drive Folder
+            Dim MyFiles As List(Of String()) = New List(Of String())
+            MyFiles = Await Class2.ListFiles
+            For Each I1 As String() In MyFiles
+                ThisTree.Nodes.Add(I1(1), I1(0), 3, 2).ToolTipText =
+                   I1(2) & " ID : " & I1(1)
+                CountItms(1) += 1
+            Next
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
-
+        ThisTree.ToolTipText += (" : " & CountItms(0) & " Folders and " & CountItms(1) & " Files.")
+        'Populate TreeView with TreeNodes
         With MyGDrive
             .BeginUpdate()
             .Nodes.Clear()
+            .Nodes.Add(ThisTree)
             .ImageList = ImageList1
             .ShowNodeToolTips = True
-            .Nodes.Add(ThisTree)
             .EndUpdate()
         End With
     End Sub
@@ -31,15 +42,19 @@
         If e.KeyCode = Keys.Escape Then Close()
     End Sub
     Private Sub BrowseBtn_Click(sender As Object, e As EventArgs) Handles BrowseBtn.Click
-        Dim FilNm As String() = Class1.BrowseFile()
-        If Not IsNothing(FilNm) Then
-            FileLocTxt.Text = FilNm(0)
-            STRFileNm.Text = FilNm(1)
-            STRSize.Text = FormatNumber(FilNm(2).ToString, 2,,, TriState.True) & " B" &
-                " | " & FormatNumber(FilNm(3).ToString, 2,,, TriState.True) & " KB"
+        If IsFile Then  'Pick a Folder
+            TempFolderDownload = Class1.BrowseFolder
+            FileLocTxt.Text = TempFolderDownload
+        Else
+            Dim FilNm As String() = Class1.BrowseFile()
+            If Not IsNothing(FilNm) Then
+                FileLocTxt.Text = FilNm(0)
+                STRFileNm.Text = FilNm(1)
+                STRSize.Text = FormatNumber(FilNm(2).ToString, 2,,, TriState.True) & " B" &
+                    " | " & FormatNumber(FilNm(3).ToString, 2,,, TriState.True) & " KB"
+            End If
         End If
     End Sub
-
     Private Sub DownloadBtn_Click(sender As Object, e As EventArgs) Handles DownloadBtn.Click
         'Download a File from ComboBox
         If String.IsNullOrEmpty(MyGDrive.Text) Or
@@ -57,37 +72,44 @@
     End Sub
     Private Sub MyGDrive_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles MyGDrive.AfterSelect
         Dim MsgT As String = Nothing
-
         'If Google Drive Folder, then Upload
-        If Not IsNothing(e.Node.TreeView.SelectedNode) And
-            Not String.IsNullOrEmpty(FileLocTxt.Text) Then
-            MsgT = " Will be uploaded to " & e.Node.FullPath _
-                & " ( " & e.Node.ToolTipText & " )"
-
-            UploadBtn.Enabled = True
-            DownloadBtn.Enabled = False
-            'If Google Drive File, then Download
-        ElseIf Not IsNothing(e.Node.TreeView.SelectedNode) Then
-            MsgT = ("Choose a File to Upload.")
+        If Not IsNothing(e.Node) And
+             e.Node.TreeView.SelectedNode.ToolTipText.StartsWith("File") Then
+            IsFile = True
             UploadBtn.Enabled = False
             DownloadBtn.Enabled = True
+            'If Google Drive File, then Download
+        ElseIf e.Node.TreeView.SelectedNode.ToolTipText.StartsWith("Folder") Then
+            IsFile = False
+            UploadBtn.Enabled = True
+            DownloadBtn.Enabled = False
+        ElseIf Not String.IsNullOrEmpty(FileLocTxt.Text) Then
+            MsgT = " Will be Downloaded to." & FileLocTxt.Text
+            DownloadBtn.Enabled = True
+            UploadBtn.Enabled = False
         End If
         STRFileNm.Text = MsgT
     End Sub
-
-    Private Sub MyGDrive_BeforeExpand(sender As Object, e As TreeViewCancelEventArgs) Handles MyGDrive.BeforeExpand
-
-
-    End Sub
-
-    Private Sub MyGDrive_AfterExpand(sender As Object, e As TreeViewEventArgs) Handles MyGDrive.AfterExpand
-        Dim MyFiles As Dictionary(Of String, String) = New Dictionary(Of String, String)
-        MyFiles = Class2.ListFiles
-        For Each I As KeyValuePair(Of String, String) In MyFiles
-            e.Node.Nodes.Add(I.Value, I.Key, 3, 2).ToolTipText =
-              ("File ID : " & I.Value)
-            CountItms(1) += 1
-        Next
-        e.Node.ToolTipText += (" : " & CountItms(0) & " Folders and " & CountItms(1) & " Files.")
+    Private Sub MyGDrive_BeforeSelect(sender As Object, e As TreeViewCancelEventArgs) Handles MyGDrive.BeforeSelect
+        If Not IsNothing(e.Node) Then
+            Dim ValidTxt As String = e.Node.ToolTipText
+            If Not ValidTxt.StartsWith("Folder") AndAlso Not ValidTxt.StartsWith("File") Then Exit Sub
+            If ValidTxt.StartsWith("File") Then Exit Sub
+            Dim FolderID As String = "mimeType != 'application/vnd.google-apps.folder' and " + "trashed=false and '" + e.Node.Name + "' in parents"
+            Dim FolderID1 As String = "mimeType = 'application/vnd.google-apps.folder' and trashed=false and '" + e.Node.Name + "' in parents"
+            Dim ExtraFiles As List(Of String()) = Class2.ListFiles(, FolderID).Result
+            Dim ExtraFolders As List(Of String()) = Class2.GetFolders(, FolderID1).Result
+            e.Node.Nodes.Clear()
+            For Each I1 As String() In ExtraFolders
+                e.Node.Nodes.Add(I1(1), I1(0), 1, 2).ToolTipText =
+                    I1(2) & " ID : " & I1(1)
+            Next
+            Application.DoEvents()
+            For Each I As String() In ExtraFiles
+                e.Node.Nodes.Add(I(1), I(0), 3, 2).ToolTipText =
+                    I(2) & " ID : " & I(1)
+            Next
+        End If
+        'If e.Node.ToolTipText.StartsWith("File") Then Exit Sub
     End Sub
 End Class

@@ -1,5 +1,6 @@
 ﻿Public Class Class1
     Private Shared FileNm() As String = Nothing
+    Private Shared FolderNm As String = Nothing
     Public Shared Function BrowseFile() As String()
         Dim OFD As New OpenFileDialog With {
         .CheckFileExists = True,
@@ -21,5 +22,18 @@
             MsgBox(ex.Message)
         End Try
         Return FileNm
+    End Function
+    Public Shared Function BrowseFolder() As String
+        Dim FBD As New FolderBrowserDialog With {
+        .RootFolder = Environment.SpecialFolder.Desktop,
+        .ShowNewFolderButton = True
+        }
+        If FBD.ShowDialog = DialogResult.OK Then
+            FolderNm = FBD.SelectedPath
+        Else
+            Return Nothing
+            Exit Function
+        End If
+        Return FolderNm
     End Function
 End Class

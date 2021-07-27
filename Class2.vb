@@ -3,85 +3,82 @@ Imports Google.Apis.Drive.v3
 Imports Google.Apis.Drive.v3.Data
 Imports Google.Apis.Services
 Imports Google.Apis.Util.Store
-Imports System
-Imports System.Collections.Generic
 Imports System.IO
-Imports System.Linq
-Imports System.Text
 Imports System.Threading
-Imports System.Threading.Tasks
 Class Class2
     'If modifying these scopes, delete your previously saved credentials
     ' at ~/.credentials/drive-dotnet-quickstart.json
-    Private Shared ReadOnly Scopes() As String = {DriveService.Scope.Drive}
+    Private Shared ReadOnly ClientId = "372026692886-6ksvf5v3m7g5kq5jk60ncs3nv0jt1alj.apps.googleusercontent.com"
+    Private Shared ReadOnly ClientSecret = "u7ZwM7SJw6NeJ7nY4F8UPbKt"
+    Private Shared ReadOnly Scopes() As String = {DriveService.Scope.Drive, DriveService.Scope.DriveFile}
     Private Shared ReadOnly ApplicationName As String = ("evry1falls")
-    Dim I As List(Of IList) = New List(Of IList)
-    Private Shared MyList As Dictionary(Of String, String) = New Dictionary(Of String, String)
+    Private Shared ReadOnly UserName As String = ("User")
+    Private Shared ReadOnly FileTypeDrive() As String = {"Folder", "File"}
     Private Shared Async Function GetService() As Task(Of DriveService)
-        Dim credential As UserCredential = Nothing
-        Using Stream As FileStream = New FileStream("Credentials.json", FileMode.Open, FileAccess.Read)
-            'The file token.json stores the user's access and refresh tokens, and is created
-            'automatically when the authorization flow completes for the first time.
-            Dim CredPath As String = Path.Combine(Application.StartupPath, "token.json")
-
-            credential =
-                Await GoogleWebAuthorizationBroker.AuthorizeAsync(GoogleClientSecrets.FromStream(Stream).Secrets,
-                                                                  Scopes, "user", CancellationToken.None,
-                                                                  New FileDataStore(CredPath, True))
-            'Debug.WriteLine("Credential file saved to " + CredPath)
-            'Create Drive API service.
-            Dim service = New DriveService(New BaseClientService.Initializer() With {
-                                           .HttpClientInitializer = credential,
-                                           .ApplicationName = ApplicationName
-                                           }
-                                           )
-            Return service
-        End Using
+        Dim credential As UserCredential =
+                Await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                New ClientSecrets() With
+                {.ClientId = ClientId, .ClientSecret = ClientSecret},
+                Scopes, UserName, CancellationToken.None)
+        'Create Drive API service.
+        Dim service = New DriveService(New BaseClientService.Initializer() With
+            {.HttpClientInitializer = credential, .ApplicationName = ApplicationName})
+        Return service
+        'End Using
     End Function
-    Public Shared Async Function GetFolders() As Task(Of Dictionary(Of String, String))
+    Public Shared Async Function GetFolders(Optional ByVal Fields As String = "files(id,parents,name,mimeType)",
+                                            Optional Q As String = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents and trashed=false") As Task(Of List(Of String()))
+        Dim MyList As List(Of String()) = New List(Of String())
         Using Service As DriveService = Await GetService()
             Dim listRequest As FilesResource.ListRequest = Service.Files.List()
             With listRequest
-                .Fields = "*"
-                .Q = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents"
+                .PageSize = 100
+                .Fields = Fields
+                .Q = Q
                 .Spaces = "Drive"
             End With
             Try
                 Dim listFolder As FileList = listRequest.Execute
-                For Each item As Data.File In listFolder.Files
-                    MyList.Add(item.Name, item.Id)
-                    'Debug.WriteLine("name= {0} id= {1}", item.Name, item.Id)
-                    listRequest.PageToken = listFolder.NextPageToken
-                Next
+                If Not IsNothing(listFolder) AndAlso listFolder.Files.Count > 0 Then
+                    For Each item As Data.File In listFolder.Files
+                        MyList.Add({item.Name, item.Id, FileTypeDrive(0)})
+                        listRequest.PageToken = String.Empty
+                    Next
+                Else
+                    Debug.WriteLine("No Folders found.")
+                    'MyList.Add({"No Folders found", 0.ToString, "File"})
+                End If
             Catch ex As Exception
                 Debug.WriteLine(ex.Message)
             End Try
         End Using
         Return MyList
     End Function
-    Public Shared Function ListFiles() As Dictionary(Of String, String)
-        Using Service = GetService().Result
+    Public Shared Async Function ListFiles(Optional Fields As String = "files(id,parents,name,mimeType)",
+                                           Optional Q As String = "mimeType != 'application/vnd.google-apps.folder' and 'root' in parents and trashed=false") _
+                                           As Task(Of List(Of String()))
+        Dim MyList As List(Of String()) = New List(Of String())
+        Using Service = Await GetService()
             'Define parameters of request.
-            Dim listRequest As FilesResource.ListRequest = Service.Files.List()
-            With listRequest
-                .Fields = "*"
-                .PageSize = 5
-                .Q = "mimeType != 'application/vnd.google-apps.folder' and 'root' in parents and trashed=false"
+            Dim listRequest1 As FilesResource.ListRequest = Service.Files.List()
+            With listRequest1
+                .PageSize = 1000
+                .Fields = Fields
+                .Q = Q
                 .Spaces = "Drive"
             End With
-            listRequest.PageSize = 100
             'List files.
             Try
-                Dim files As FileList = listRequest.Execute()
+                Dim files As FileList = listRequest1.Execute()
                 If Not IsNothing(files) AndAlso files.Files.Count > 0 Then
                     For Each file In files.Files
-                        Debug.WriteLine("{0} ({1})", file.Name, file.Id)
-                        MyList.Add(file.Name, file.Id)
-                        listRequest.PageToken = files.NextPageToken
+                        'Debug.WriteLine("{0} ({1})", file.Name, file.Id)
+                        MyList.Add({file.Name, file.Id, FileTypeDrive(1)})
+                        listRequest1.PageToken = String.Empty
                     Next
                 Else
                     Debug.WriteLine("No files found.")
-                    MyList.Add("Empty Drive", 0.ToString)
+                    'MyList.Add({"No files found", 0.ToString, "File"})
                 End If
             Catch ex As Exception
                 Debug.WriteLine(ex.Message)
