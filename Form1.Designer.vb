@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Form1
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class Form1
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
@@ -43,7 +43,7 @@ Partial Class Form1
         'UploadBtn
         '
         Me.UploadBtn.Enabled = False
-        Me.UploadBtn.Location = New System.Drawing.Point(15, 255)
+        Me.UploadBtn.Location = New System.Drawing.Point(12, 327)
         Me.UploadBtn.Name = "UploadBtn"
         Me.UploadBtn.Size = New System.Drawing.Size(75, 23)
         Me.UploadBtn.TabIndex = 0
@@ -54,7 +54,7 @@ Partial Class Form1
         '
         Me.FileLocTxt.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.FileLocTxt.Location = New System.Drawing.Point(15, 229)
+        Me.FileLocTxt.Location = New System.Drawing.Point(12, 301)
         Me.FileLocTxt.Name = "FileLocTxt"
         Me.FileLocTxt.ReadOnly = True
         Me.FileLocTxt.Size = New System.Drawing.Size(439, 20)
@@ -63,7 +63,7 @@ Partial Class Form1
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 213)
+        Me.Label1.Location = New System.Drawing.Point(9, 285)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(63, 13)
         Me.Label1.TabIndex = 2
@@ -72,7 +72,7 @@ Partial Class Form1
         'BrowseBtn
         '
         Me.BrowseBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BrowseBtn.Location = New System.Drawing.Point(463, 227)
+        Me.BrowseBtn.Location = New System.Drawing.Point(460, 299)
         Me.BrowseBtn.Name = "BrowseBtn"
         Me.BrowseBtn.Size = New System.Drawing.Size(75, 23)
         Me.BrowseBtn.TabIndex = 3
@@ -83,7 +83,7 @@ Partial Class Form1
         '
         Me.DownloadBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DownloadBtn.Enabled = False
-        Me.DownloadBtn.Location = New System.Drawing.Point(379, 255)
+        Me.DownloadBtn.Location = New System.Drawing.Point(376, 327)
         Me.DownloadBtn.Name = "DownloadBtn"
         Me.DownloadBtn.Size = New System.Drawing.Size(75, 23)
         Me.DownloadBtn.TabIndex = 4
@@ -95,7 +95,7 @@ Partial Class Form1
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.STRFileNm, Me.ToolStripSeparator1, Me.STRSize, Me.ToolStripSeparator2, Me.STRFileID})
-        Me.ToolStrip1.Location = New System.Drawing.Point(0, 281)
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 363)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(550, 25)
         Me.ToolStrip1.TabIndex = 5
@@ -133,11 +133,11 @@ Partial Class Form1
         Me.MyGDrive.HotTracking = True
         Me.MyGDrive.ImageIndex = 0
         Me.MyGDrive.ImageList = Me.ImageList1
-        Me.MyGDrive.Location = New System.Drawing.Point(15, 12)
+        Me.MyGDrive.Location = New System.Drawing.Point(12, 12)
         Me.MyGDrive.Name = "MyGDrive"
         Me.MyGDrive.SelectedImageIndex = 0
         Me.MyGDrive.ShowNodeToolTips = True
-        Me.MyGDrive.Size = New System.Drawing.Size(439, 198)
+        Me.MyGDrive.Size = New System.Drawing.Size(439, 270)
         Me.MyGDrive.StateImageList = Me.ImageList1
         Me.MyGDrive.TabIndex = 6
         '
@@ -154,7 +154,7 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(550, 306)
+        Me.ClientSize = New System.Drawing.Size(550, 388)
         Me.ControlBox = False
         Me.Controls.Add(Me.MyGDrive)
         Me.Controls.Add(Me.ToolStrip1)

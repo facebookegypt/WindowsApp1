@@ -86,30 +86,26 @@ Class Class2
         End Using
         Return MyList
     End Function
-    Public Shared Function UploadFileToFolder(FullPathLocFil As String) As _
-        Task(Of Google.Apis.Upload.IUploadProgress)
-        Dim Service = GetService.Result
-        Dim TaskI As Task(Of Google.Apis.Upload.IUploadProgress) = Nothing
+    Public Shared Async Function UploadFileToFolder(FullPathLocFil As String, FileParents As String) As Task(Of Google.Apis.Upload.IUploadProgress)
+        Dim TaskI As Google.Apis.Upload.IUploadProgress = Nothing
         Dim contType As String = GetContentType(FullPathLocFil)
-        Dim Scopes() As String =
-            {DriveService.Scope.DriveFile, DriveService.Scope.Drive}
         Dim ThisFile As Data.File = New Data.File() With
             {
             .Name = FullPathLocFil,
-            .MimeType = contType
+            .MimeType = contType,
+            .Parents = {FileParents}
         }
-        Using UpStream As FileStream =
-            New FileStream(FullPathLocFil, FileMode.Open, FileAccess.Read)
-            Dim insert = Service.Files.Create(ThisFile, UpStream, contType)
-            insert.ChunkSize = Google.Apis.Upload.ResumableUpload.MinimumChunkSize * 2
-            TaskI = insert.UploadAsync().Result
+        Dim ChunkSize As Integer = 0
+        Using Service = Await GetService()
+            Using UpStream As FileStream = New FileStream(FullPathLocFil, FileMode.Open, FileAccess.Read)
+                Dim insert = Service.Files.Create(ThisFile, UpStream, contType)
+                ChunkSize = Google.Apis.Upload.ResumableUpload.MinimumChunkSize * 2
+                insert.ChunkSize = ChunkSize
+                TaskI = Await insert.UploadAsync(Nothing)
+            End Using
         End Using
         Return TaskI
-        Upload_ProgressChanged(TaskI)
     End Function
-    Private Shared Sub Upload_ProgressChanged(progress As Google.Apis.Upload.IUploadProgress)
-        Debug.WriteLine(progress.Status + " " + progress.BytesSent)
-    End Sub
     Private Shared Function GetContentType(File As String) As String
         Dim mimeType As String = "application/unknown"
         Dim ext As String = Path.GetExtension(File).ToLower()
