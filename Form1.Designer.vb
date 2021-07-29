@@ -42,6 +42,8 @@ Partial Class Form1
         '
         'UploadBtn
         '
+        Me.UploadBtn.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.UploadBtn.Enabled = False
         Me.UploadBtn.Location = New System.Drawing.Point(12, 327)
         Me.UploadBtn.Name = "UploadBtn"
@@ -76,12 +78,13 @@ Partial Class Form1
         Me.BrowseBtn.Name = "BrowseBtn"
         Me.BrowseBtn.Size = New System.Drawing.Size(75, 23)
         Me.BrowseBtn.TabIndex = 3
+        Me.BrowseBtn.Tag = ""
         Me.BrowseBtn.Text = "Browse"
         Me.BrowseBtn.UseVisualStyleBackColor = True
         '
         'DownloadBtn
         '
-        Me.DownloadBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DownloadBtn.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DownloadBtn.Enabled = False
         Me.DownloadBtn.Location = New System.Drawing.Point(376, 327)
         Me.DownloadBtn.Name = "DownloadBtn"
@@ -128,6 +131,9 @@ Partial Class Form1
         '
         'MyGDrive
         '
+        Me.MyGDrive.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.MyGDrive.FullRowSelect = True
         Me.MyGDrive.HideSelection = False
         Me.MyGDrive.HotTracking = True
