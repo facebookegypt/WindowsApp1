@@ -86,19 +86,21 @@ Class Class2
         End Using
         Return MyList
     End Function
-    Public Shared Async Function UploadFileToFolder(FullPathLocFil As String, FileParents As String) As Task(Of Google.Apis.Upload.IUploadProgress)
+    Public Shared Async Function UploadFileToFolder(FullPathLocFil As String, FileParents As String) As _
+        Task(Of Google.Apis.Upload.IUploadProgress)
         Dim TaskI As Google.Apis.Upload.IUploadProgress = Nothing
         Dim contType As String = GetContentType(FullPathLocFil)
         Dim ThisFile As Data.File = New Data.File() With
             {
             .Name = FullPathLocFil,
+            .Description = "Uploaded by a desktop app 'Evry1falls'",
             .MimeType = contType,
             .Parents = {FileParents}
         }
         Dim ChunkSize As Integer = 0
         Using Service = Await GetService()
             Using UpStream As FileStream = New FileStream(FullPathLocFil, FileMode.Open, FileAccess.Read)
-                Dim insert = Service.Files.Create(ThisFile, UpStream, contType)
+                Dim insert As FilesResource.CreateMediaUpload = Service.Files.Create(ThisFile, UpStream, contType)
                 ChunkSize = Google.Apis.Upload.ResumableUpload.MinimumChunkSize * 2
                 insert.ChunkSize = ChunkSize
                 TaskI = Await insert.UploadAsync(Nothing)
@@ -106,6 +108,16 @@ Class Class2
         End Using
         Return TaskI
     End Function
+    Public Shared Async Sub DeleteFile(FileByID As String)
+        Using Service As DriveService = Await GetService()
+            Try
+                Dim DeleteRequest As Task(Of String) = Service.Files.Delete(FileByID).ExecuteAsync
+                MsgBox("Deleted!")
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+        End Using
+    End Sub
     Private Shared Function GetContentType(File As String) As String
         Dim mimeType As String = "application/unknown"
         Dim ext As String = Path.GetExtension(File).ToLower()

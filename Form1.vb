@@ -3,7 +3,7 @@
     Private TempFolderDownload As String = ("C:\")
     Private IsFile As Boolean = True
     Private ThisFolderID As String = String.Empty
-    Private Async Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Async Sub GetHomeDrive()
         Dim ThisTree As TreeNode = New TreeNode("My Google Drive", 0, 0) With {
             .ToolTipText = "My Google Drive",
             .Name = "GDriveFolders"
@@ -39,6 +39,9 @@
             .EndUpdate()
         End With
     End Sub
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        GetHomeDrive()
+    End Sub
     Private Sub Form1_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Escape Then Close()
     End Sub
@@ -65,6 +68,10 @@
         End If
     End Sub
     Private Async Sub UploadBtn_Click(sender As Object, e As EventArgs) Handles UploadBtn.Click
+        If String.IsNullOrEmpty(ThisFolderID) Then
+            MsgBox("Pick a Google Drive Folder First.")
+            Exit Sub
+        End If
         Try
             Await Class2.UploadFileToFolder(FileLocTxt.Text, ThisFolderID)
             MsgBox("Completed.")
@@ -73,22 +80,6 @@
         End Try
     End Sub
     Private Sub MyGDrive_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles MyGDrive.AfterSelect
-        FileLocTxt.Text = String.Empty
-        'If Google Drive Folder, then Upload
-        If Not IsNothing(e.Node) And
-             e.Node.TreeView.SelectedNode.ToolTipText.StartsWith("File") Then
-            IsFile = True
-            UploadBtn.Enabled = False
-            DownloadBtn.Enabled = True
-            'If Google Drive File, then Download
-        ElseIf e.Node.TreeView.SelectedNode.ToolTipText.StartsWith("Folder") Then
-            IsFile = False
-            ThisFolderID = e.Node.Name
-            UploadBtn.Enabled = True
-            DownloadBtn.Enabled = False
-        End If
-    End Sub
-    Private Sub MyGDrive_BeforeSelect(sender As Object, e As TreeViewCancelEventArgs) Handles MyGDrive.BeforeSelect
         If Not IsNothing(e.Node) Then
             Dim ValidTxt As String = e.Node.ToolTipText
             If Not ValidTxt.StartsWith("Folder") AndAlso Not ValidTxt.StartsWith("File") Then
@@ -116,6 +107,34 @@
                 e.Node.Nodes.Add(I(1), I(0), 3, 2).ToolTipText =
                     I(2) & " ID : " & I(1)
             Next
+        End If
+    End Sub
+    Private Sub MyGDrive_BeforeSelect(sender As Object, e As TreeViewCancelEventArgs) Handles MyGDrive.BeforeSelect
+        FileLocTxt.Text = String.Empty
+        'If Google Drive Folder, then Upload
+        If Not IsNothing(e.Node) And
+             e.Node.ToolTipText.StartsWith("File") Then
+            IsFile = True
+            UploadBtn.Enabled = False
+            DownloadBtn.Enabled = True
+            'If Google Drive File, then Download
+        ElseIf e.Node.ToolTipText.StartsWith("Folder") Then
+            IsFile = False
+            ThisFolderID = e.Node.Name
+            UploadBtn.Enabled = True
+            DownloadBtn.Enabled = False
+        End If
+    End Sub
+    Private Sub MyGDrive_KeyDown(sender As Object, e As KeyEventArgs) Handles MyGDrive.KeyDown
+        If e.KeyCode = Keys.Delete Then
+            Dim FiletoDelete As String = MyGDrive.SelectedNode.Name
+            Dim AreYouSure As MsgBoxResult = MsgBox("Delete ?", MsgBoxStyle.YesNo + MsgBoxStyle.Critical)
+            If AreYouSure = MsgBoxResult.Yes Then
+                Class2.DeleteFile(FiletoDelete)
+                GetHomeDrive()
+            Else
+                Exit Sub
+            End If
         End If
     End Sub
 End Class
